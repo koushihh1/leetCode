@@ -1,0 +1,71 @@
+
+# Python   
+
+#方法一，空间消耗最小
+#一维dp实现
+
+class Solution(object):
+    def minDistance(self, word1, word2):
+        """
+        :type word1: str
+        :type word2: str
+        :rtype: int
+        """
+        f1=[0 for i in range(len(word2)+1)]      
+
+        f1[0]=0
+
+        for i in range(1,len(word2)+1):
+            f1[i]=i
+        
+        for i in range(1,len(word1)+1):
+            state_i1_j1=f1[0]
+            f1[0]=i
+            for j in range(1,len(word2)+1):
+                state_i_j1=f1[j-1]
+                state_i1_j=f1[j]
+                if word1[i-1]==word2[j-1]:
+                    f1[j]=state_i1_j1
+                else:
+                    f1[j]=min(state_i1_j1,state_i1_j,state_i_j1)+1
+                state_i1_j1=state_i1_j
+        return int(f1[len(word2)])
+
+
+    #方法2
+    # 2个一维dp数组实现，用于保存当前正在更新的行和上一行
+    def minDistance2(self,word1,word2):
+        f1=[0 for i in range(len(word2)+1)]
+        f2=[0 for i in range(len(word2)+1)]
+
+        for i in range(len(word2)+1):
+            f1[i]=i
+        
+        for i in range(1,len(word1)+1):
+            f2[0]=i     
+            for j in range(1,len(word2)+1):
+                if word1[i-1]==word2[j-1]:
+                    f2[j]=f1[j-1]
+                else:
+                    f2[j]=min(f2[j-1],f1[j],f1[j-1])+1
+            f1,f2=f2,f1
+        return int(f1[len(word2)])
+
+    #方法3 常规方法,2维dp
+    def minDistance3(self,word1,word2):  
+        f=[[0 for i in range(0,len(word2)+1)] for j in range(0,len(word1)+1)]
+
+        f[0][0]=0
+
+        for i in range(len(word1)+1):
+            f[i][0]=i
+        for j in range(len(word2)+1):
+            f[0][j]=j
+
+        for i in range(1,len(word1)+1):
+            for j in range(1,len(word2)+1):
+                if word1[i-1]==word2[j-1]:
+                    f[i][j]=f[i-1][j-1]
+                else:
+                    f[i][j]=min(f[i-1][j-1],f[i-1][j],f[i][j-1])+1
+        return int(f[len(word1)][len(word2)])

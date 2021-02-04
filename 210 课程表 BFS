@@ -1,0 +1,64 @@
+#include<iostream>
+#include<vector>
+#include<deque>
+#include<string>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> edges;
+    vector<int> InDegree;
+    deque<int> q;
+
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        
+        edges.resize(numCourses);
+        InDegree.resize(numCourses);
+        for (auto i : prerequisites) {
+            edges[i[1]].push_back(i[0]);
+            InDegree[i[0]]++;
+        }
+
+        int num = 0;
+        for (int j = 0; j < numCourses; j++) {
+            if (InDegree[j] == 0) {
+                num++;
+                q.push_back(j);
+            }
+        }
+
+        vector<int> empty_vec;
+        vector<int> result;
+        while (!q.empty()) {
+            int value = q.front();
+            result.push_back(value);
+            q.pop_front();
+            for (auto i : edges[value]) {
+                InDegree[i]--;
+                if (InDegree[i] == 0) {
+                    num++;
+                    q.push_back(i);
+                }
+            }
+        }
+        if (num == numCourses)
+            return result;
+        else
+            return empty_vec;
+    }
+        
+};
+
+
+
+
+
+int main()
+{
+    Solution s;
+    vector<vector<int>> v{ {1,0},{2,0},{3,1},{3,2} };
+    vector<int> vec = s.findOrder(4,v);
+    for (auto i : vec)
+        cout << i << " ";
+}
